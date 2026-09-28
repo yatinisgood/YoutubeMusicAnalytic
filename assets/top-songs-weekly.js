@@ -56,7 +56,7 @@ function videoLink(song, className) {
   link.setAttribute('aria-label', `在 YouTube 觀看：${song.title || '未命名影片'}（開啟新分頁）`);
   return link;
 }
-function card(song, allTime = false) {
+function card(song, allTime = false, onBoard = false) {
   const article = element('article', 'card');
   const cover = videoLink(song, 'cover');
   const img = element('img');
@@ -98,9 +98,9 @@ function card(song, allTime = false) {
   actions.append(button);
   article.append(cover, badge, title, details);
   if (allTime) {
-    article.append(element('p', 'ranking-total', `累計奪冠 ${formatNumber(song.top1_weeks_count)} 週`));
-    article.append(element('p', 'details', `首次奪冠：${formatDate(song.first_top1_week)}`));
-    article.append(element('p', 'details', `最近奪冠：${formatDate(song.latest_top1_week)}`));
+    article.append(element('p', 'ranking-total', `累計${onBoard ? '入榜' : '奪冠'} ${formatNumber(song.top1_weeks_count)} 週`));
+    article.append(element('p', 'details', `首次${onBoard ? '入榜' : '奪冠'}：${formatDate(song.first_top1_week)}`));
+    article.append(element('p', 'details', `最近${onBoard ? '入榜' : '奪冠'}：${formatDate(song.latest_top1_week)}`));
   } else {
   const lastRank = song.lastweekrank;
   const previous = String(lastRank) === '0' ? '新進榜' : lastRank == null || lastRank === '' ? '未提供' : `第 ${lastRank} 名`;
@@ -247,3 +247,33 @@ async function loadGlobalTop3() {
 }
 document.getElementById('global-top-retry').addEventListener('click', loadGlobalTop3);
 loadGlobalTop3();
+
+async function loadGlobalOnBoard() {
+  const container = document.getElementById('global-board-cards');
+  const message = document.getElementById('global-board-status');
+  const retryButton = document.getElementById('global-board-retry');
+  retryButton.hidden = true;
+  container.setAttribute('aria-busy', 'true');
+  message.textContent = '正在載入全球累計入榜 Top 6…';
+  try {
+    const response = await fetch('./data/GenJSON_ByMusicInfo_GlobalTopSongsOnBoard.json', { cache: 'no-cache' });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const rows = await response.json();
+    if (!Array.isArray(rows) || rows.length > 6 || rows.some(row => !row
+      || typeof row.encryptedVideoId !== 'string'
+      || !Number.isInteger(row.rank) || row.rank < 1
+      || !Number.isInteger(row.top1_weeks_count) || row.top1_weeks_count < 1
+      || !/^\d{8}$/.test(String(row.first_top1_week))
+      || !/^\d{8}$/.test(String(row.latest_top1_week)))) throw new Error('Invalid global Top 6');
+    container.replaceChildren(...rows.map(song => card(song, true, true)));
+    message.textContent = rows.length ? '' : '目前沒有全球累計入榜資料。';
+  } catch (error) {
+    message.textContent = '全球累計入榜資料尚未提供或載入失敗，請重試。';
+    retryButton.hidden = false;
+    console.error('Unable to load global Top 6:', error);
+  } finally {
+    container.setAttribute('aria-busy', 'false');
+  }
+}
+document.getElementById('global-board-retry').addEventListener('click', loadGlobalOnBoard);
+loadGlobalOnBoard();

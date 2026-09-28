@@ -28,3 +28,9 @@ python3 -m http.server 8000 --directory HTML_Github
 `GenJSON_ByMusicInfo_GlobalTopSongsWeekly.py` 使用 BigQuery 計算全球「每週熱播歌曲」第一名的累計週數，輸出獨立的 `data/GenJSON_ByMusicInfo_GlobalTopSongsWeekly.json`，並已加入主程式更新清單。統計依 `songid`、`encryptedVideoId`、`title` 分組，以不同 `dataweek` 計次，保留 `DENSE_RANK` 同分同名次規則，固定最多取三筆，同分依歌曲 ID、影片 ID 與標題排序。歌手去重，最新觀看次數按影片彙整，避免關聯產生重複卡片。
 
 `top-songs-weekly.html` 在榜單時間選擇器上方呈現三張卡片，顯示累計奪冠週數、首次及最近奪冠日期、歌曲資訊與最新總播放次數。此區塊不受所選週榜或國家關注影響，載入失敗可獨立重試。
+
+### 全球累計入榜 Top 6
+
+`GenJSON_ByMusicInfo_GlobalTopSongsOnBoard.py` 匯出 `data/GenJSON_ByMusicInfo_GlobalTopSongsOnBoard.json`，已加入主程式更新清單。依提供的 SQL 計算全球每週熱播歌曲所有名次的不同 `dataweek` 次數，最多取六筆。JSON 沿用 `top1_weeks_count`、`first_top1_week`、`latest_top1_week` 欄位名稱，但在此檔案代表累計入榜週數、首次及最近入榜週次，並非奪冠週數。
+
+頁面在「全球累計奪冠 Top 3」下方、榜單時間選擇器上方顯示「全球累計入榜 Top 6」，桌面六張同列，較窄螢幕沿用三欄、兩欄、單欄配置。此區塊不受榜單時間與國家關注影響，並提供獨立載入失敗重試。

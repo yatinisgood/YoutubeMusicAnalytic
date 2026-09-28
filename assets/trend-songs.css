@@ -37,3 +37,5 @@
 @media(max-width:460px){#weekly-layout .card{min-height:480px}}
 
 #global-top-cards .card{height:auto;min-height:460px}#global-top-status:empty{display:none}
+
+#global-board-cards .card{height:auto;min-height:460px}#global-board-cards .ranking-total{color:var(--ranking)}#global-board-status:empty{display:none}
