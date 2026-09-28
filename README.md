@@ -19,3 +19,5 @@ python3 -m http.server 8000 --directory HTML_Github
 瀏覽 `http://localhost:8000`。請使用 HTTP 伺服器，直接以 `file://` 開啟 HTML 可能無法讀取 JSON。
 
 部署時將 `HTML_Github` 目錄的完整內容發布至靜態網站或 GitHub Pages，保留 `assets` 與 `data` 的相對位置。
+
+各國卡片可收藏國家，Cookie 保留一年並限於網站路徑。收藏跨日期保留，收藏與未收藏各組均依英文國名 A–Z 排序；累計 Top 3 與當期精選不受影響。Cookie 被清除後收藏也會重設。

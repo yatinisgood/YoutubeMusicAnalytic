@@ -2,6 +2,56 @@
 const ui = Object.fromEntries(['all-time', 'top-three', 'status', 'retry', 'featured', 'cards', 'timeline', 'snapshot', 'previous', 'next'].map(id => [id, document.getElementById(id)]));
 let snapshots = new Map();
 const number = new Intl.NumberFormat('zh-TW');
+const countryCodes = Object.fromEntries(`阿根廷:AR 澳洲:AU 奧地利:AT 比利時:BE 玻利維亞:BO 巴西:BR 加拿大:CA 智利:CL 哥倫比亞:CO 哥斯大黎加:CR 捷克:CZ 丹麥:DK 多明尼加共和國:DO 厄瓜多:EC 埃及:EG 薩爾瓦多:SV 愛沙尼亞:EE 芬蘭:FI 法國:FR 德國:DE 瓜地馬拉:GT 宏都拉斯:HN 香港:HK 匈牙利:HU 冰島:IS 印度:IN 印尼:ID 愛爾蘭:IE 以色列:IL 義大利:IT 日本:JP 肯亞:KE 南韓:KR 盧森堡:LU 馬來西亞:MY 墨西哥:MX 荷蘭:NL 紐西蘭:NZ 尼加拉瓜:NI 奈及利亞:NG 挪威:NO 巴拿馬:PA 巴拉圭:PY 祕魯:PE 菲律賓:PH 波蘭:PL 葡萄牙:PT 羅馬尼亞:RO 俄羅斯:RU 沙烏地阿拉伯:SA 塞爾維亞:RS 新加坡:SG 南非:ZA 西班牙:ES 瑞典:SE 瑞士:CH 台灣:TW 坦尚尼亞:TZ 泰國:TH 烏干達:UG 烏克蘭:UA 阿拉伯聯合大公國:AE 英國:GB 美國:US 烏拉圭:UY 越南:VN 辛巴威:ZW`.split(' ').map(pair => pair.split(':')));
+const englishCountries = new Intl.DisplayNames(['en'], { type: 'region' });
+const countryOrder = new Intl.Collator('en', { sensitivity: 'base' });
+const bookmarkCookie = 'music_atlas_countries';
+// Scope to this site's directory so other GitHub Pages projects stay separate.
+const bookmarkPath = new URL('.', location.href).pathname;
+function countryKey(name) { return countryCodes[name] || name || ''; }
+function readBookmarks() {
+  try {
+    const cookie = document.cookie.split('; ').find(value => value.startsWith(`${bookmarkCookie}=`));
+    const values = cookie ? JSON.parse(decodeURIComponent(cookie.slice(bookmarkCookie.length + 1))) : [];
+    return new Set(Array.isArray(values) ? values.filter(value => typeof value === 'string') : []);
+  } catch { return new Set(); }
+}
+let bookmarks = readBookmarks();
+function saveBookmarks() {
+  try {
+    document.cookie = `${bookmarkCookie}=${encodeURIComponent(JSON.stringify([...bookmarks]))}; Path=${bookmarkPath}; Max-Age=31536000; SameSite=Lax${location.protocol === 'https:' ? '; Secure' : ''}`;
+    const saved = readBookmarks();
+    return saved.size === bookmarks.size && [...bookmarks].every(value => saved.has(value));
+  } catch { return false; }
+}
+function englishCountry(name) {
+  return countryCodes[name] ? englishCountries.of(countryCodes[name]) : name || '';
+}
+function compareCountries(a, b) {
+  return Number(bookmarks.has(countryKey(b.counttry))) - Number(bookmarks.has(countryKey(a.counttry)))
+    || countryOrder.compare(englishCountry(a.counttry), englishCountry(b.counttry))
+    || countryOrder.compare(a.songid, b.songid);
+}
+function bookmarkButton(song) {
+  const country = song.counttry;
+  const key = countryKey(country);
+  const selected = bookmarks.has(key);
+  const button = element('button', 'bookmark-button', selected ? '★ 已收藏' : '☆ 收藏');
+  button.type = 'button';
+  button.dataset.country = key;
+  button.setAttribute('aria-pressed', String(selected));
+  button.setAttribute('aria-label', `${selected ? '取消收藏' : '收藏'}${country}`);
+  button.addEventListener('click', () => {
+    if (bookmarks.has(key)) bookmarks.delete(key); else bookmarks.add(key);
+    const saved = saveBookmarks();
+    renderSnapshot();
+    document.getElementById('bookmark-status').textContent = saved
+      ? `${country}${bookmarks.has(key) ? '已加入' : '已移除'}書籤。`
+      : '瀏覽器無法儲存 Cookie；本次開啟期間仍會保留書籤。';
+    [...ui.cards.querySelectorAll('.bookmark-button')].find(item => item.dataset.country === key)?.focus({ preventScroll: true });
+  });
+  return button;
+}
 function element(tag, className, text) {
   const node = document.createElement(tag);
   if (className) node.className = className;
@@ -52,6 +102,10 @@ function card(song, countries, ranking) {
   button.title = '前往 YouTube 觀看';
   // Static icon; JSON values are always inserted as text.
   button.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.6 7.2a3 3 0 0 0-2.1-2.1C17.7 4.6 12 4.6 12 4.6s-5.7 0-7.5.5a3 3 0 0 0-2.1 2.1A31 31 0 0 0 2 12a31 31 0 0 0 .4 4.8 3 3 0 0 0 2.1 2.1c1.8.5 7.5.5 7.5.5s5.7 0 7.5-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 22 12a31 31 0 0 0-.4-4.8ZM10 15.5v-7l6 3.5-6 3.5Z"/></svg>';
+  if (!countries && !ranking && song.counttry) {
+    actions.append(bookmarkButton(song));
+    article.classList.toggle('bookmarked', bookmarks.has(countryKey(song.counttry)));
+  }
   actions.append(button);
   article.append(cover, badge, title, details);
   if (countries) {
@@ -98,7 +152,7 @@ function renderSnapshot() {
   // Count countries only within the selected snapshot. Ties keep JSON order.
   const winner = [...groups.values()].sort((a, b) => b.countries.size - a.countries.size)[0];
   ui.featured.replaceChildren(...(winner ? [card(winner.song, [...winner.countries])] : []));
-  ui.cards.replaceChildren(...songs.map(song => card(song)));
+  ui.cards.replaceChildren(...[...songs].sort(compareCountries).map(song => card(song)));
   ui.status.hidden = songs.length > 0;
   ui.status.textContent = '目前沒有榜單資料。';
 }
