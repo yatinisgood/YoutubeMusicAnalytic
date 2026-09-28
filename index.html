@@ -3,34 +3,35 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="各國排行第1的發燒音樂影片。">
-  <title>全球發燒音樂影片</title>
+  <meta name="description" content="探索 YouTube 全球發燒音樂影片與各國完整排行榜。">
+  <title>音樂榜單入口</title>
   <script src="assets/theme.js"></script>
   <link rel="stylesheet" href="assets/trend-songs.css">
-  <script src="assets/trend-songs.js" defer></script>
+  <link rel="stylesheet" href="assets/home.css">
 </head>
 <body>
   <header>
     <div class="theme-controls"><button id="theme-toggle" type="button" aria-pressed="false" hidden>暗色模式</button></div>
-    <h1>全球發燒音樂影片</h1>
+    <h1>音樂榜單</h1>
     <p class="credit">Create With <span class="heart" aria-label="愛心">♥</span> By: <strong>Sherlock Tsai</strong> <strong>(自2024-01-11開始追蹤)</strong></p>
   </header>
-  <nav class="page-nav" aria-label="榜單頁面"><a href="index.html" aria-current="page">全球冠軍總覽</a><a href="by-country.html">各國完整排行榜</a></nav>
-  <main aria-label="各國排行第一的發燒音樂影片">
-    <section id="all-time" class="all-time" aria-labelledby="all-time-title" hidden>
-      <h2 id="all-time-title">霸榜 Top 3</h2>
-      <p class="ranking-note">加總所有榜單時間的各國第一，每個時間、每個國家各計一次。</p>
-      <p id="dominance-status" class="ranking-note" role="status"></p>
-      <div id="top-three" class="top-three"></div>
-    </section>
-    <div class="timeline" id="timeline" hidden><button id="previous" type="button" aria-label="上一個時間點">←</button><label for="snapshot">榜單時間</label><select id="snapshot" aria-label="榜單時間"></select><button id="next" type="button" aria-label="下一個時間點">→</button></div>
-    <p id="status" class="status" role="status">正在載入榜單…</p>
-    <button id="retry" type="button" hidden>重新載入</button>
-    <p class="bookmark-note">★ 關注的國家優先，其餘依英文國名 A–Z 排序。</p>
-    <p id="bookmark-status" class="sr-only" role="status"></p>
-    <div class="layout"><section id="featured" aria-label="最多國家第一"></section><section id="cards" class="cards" aria-label="各國冠軍影片"></section></div>
+  <main class="home-main">
+    <p class="home-intro">從全球冠軍到各國排名，探索每一天的發燒音樂。</p>
+    <nav class="home-links" aria-label="選擇音樂榜單">
+      <a class="home-entry" href="trending-music-videos.html">
+        <span class="entry-label">GLOBAL CHARTS</span>
+        <h2>全球冠軍總覽</h2>
+        <p>一次瀏覽各國排行第一的發燒音樂影片，探索最多國家第一與歷史霸榜 Top 3。</p>
+        <span class="entry-action">探索全球冠軍 <span aria-hidden="true">→</span></span>
+      </a>
+      <a class="home-entry" href="trending-music-videos_by-country.html">
+        <span class="entry-label">COUNTRY CHARTS</span>
+        <h2>各國完整排行榜</h2>
+        <p>選擇國家與日期，查看當日完整排名，以及該國歷史長尾霸榜 Top 3。</p>
+        <span class="entry-action">查看各國排行 <span aria-hidden="true">→</span></span>
+      </a>
+    </nav>
   </main>
-  <footer>各國排行第一的發燒音樂（影片） · 資料來源：YouTube 音樂榜單<br>總播放次數採最新觀看次數資料，非所選榜單時間的歷史觀看次數。</footer>
-  <noscript><p class="status">請啟用 JavaScript 以讀取音樂榜單。</p></noscript>
+  <footer>發燒音樂影片排行榜 · 資料來源：YouTube 音樂榜單</footer>
 </body>
 </html>

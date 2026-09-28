@@ -15,12 +15,12 @@ function videoLink(song, className) {
   link.setAttribute('aria-label', `在 YouTube 觀看：${song.title || '未命名影片'}（開啟新分頁）`);
   return link;
 }
-function card(song) {
+function card(song, longevity = false) {
   const article = element('article', 'card');
   const cover = videoLink(song, 'cover');
   const img = element('img');
   img.alt = '';
-  img.loading = 'lazy';
+  img.loading = longevity ? 'eager' : 'lazy';
   img.decoding = 'async';
   const fallback = `https://i.ytimg.com/vi/${encodeURIComponent(song.songid)}/hqdefault.jpg`;
   let thumbnail;
@@ -31,7 +31,7 @@ function card(song) {
     else img.remove();
   });
   cover.append(img);
-  const badge = element('div', 'badge', `第 ${song.rank} 名`);
+  const badge = element('div', 'badge', longevity ? `長尾霸榜 TOP ${song.longevity_rank}` : `第 ${song.rank} 名`);
   const title = element('h2', 'song-title');
   const link = videoLink(song);
   link.textContent = song.title || '未命名影片';
@@ -56,6 +56,11 @@ function card(song) {
   button.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.6 7.2a3 3 0 0 0-2.1-2.1C17.7 4.6 12 4.6 12 4.6s-5.7 0-7.5.5a3 3 0 0 0-2.1 2.1A31 31 0 0 0 2 12a31 31 0 0 0 .4 4.8 3 3 0 0 0 2.1 2.1c1.8.5 7.5.5 7.5.5s5.7 0 7.5-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 22 12a31 31 0 0 0-.4-4.8ZM10 15.5v-7l6 3.5-6 3.5Z"/></svg>';
   actions.append(button);
   article.append(cover, badge, title, details);
+  if (longevity) {
+    article.classList.add('longevity-card');
+    article.append(element('p', 'ranking-total', `累計 ${number.format(song.total_score)} 分`));
+    article.append(element('p', 'longevity-stats', `入榜 ${number.format(song.appear_count)} 次 · 最高第 ${song.best_rank} 名 · 平均第 ${Number(song.avg_rank).toFixed(1)} 名`));
+  }
   article.append(plays, actions);
   return article;
 }
@@ -71,7 +76,7 @@ let ready = false;
 const cache = new Map();
 function render() {
   const songs = rows.filter(row => row.counttry === country.value).sort((a, b) => Number(a.rank) - Number(b.rank));
-  cards.replaceChildren(...songs.map(card));
+  cards.replaceChildren(...songs.map(song => card(song)));
   status.textContent = songs.length
     ? `${country.value} · ${formatDate(date.value)} · 共 ${number.format(songs.length)} 部影片`
     : `${country.value || '此日期'} · ${formatDate(date.value)} 沒有榜單資料。`;
@@ -110,6 +115,7 @@ async function loadDate() {
     country.disabled = countries.length === 0;
     ready = true;
     render();
+    renderLongevity();
   } catch (error) {
     if (request !== requestId) return;
     status.textContent = '這個日期的榜單載入失敗，請重試或選擇其他日期。';
@@ -146,7 +152,41 @@ async function load() {
     console.error('Unable to load date index:', error);
   }
 }
-country.addEventListener('change', () => { if (ready) render(); });
+country.addEventListener('change', () => { if (ready) render(); renderLongevity(); });
 date.addEventListener('change', loadDate);
 retry.addEventListener('click', () => { if (files.size) loadDate(); else load(); });
+const longevityCards = document.getElementById('longevity-cards');
+const longevityStatus = document.getElementById('longevity-status');
+const longevityRetry = document.getElementById('longevity-retry');
+let longevityRows = null;
+function renderLongevity() {
+  document.getElementById('longevity-title').textContent = `${country.value ? country.value + ' · ' : ''}長尾霸榜 Top 3`;
+  if (longevityRows === null) return;
+  const top = longevityRows.filter(row => row.counttry === country.value)
+    .sort((a, b) => Number(a.card_order) - Number(b.card_order)).slice(0, 3);
+  longevityCards.replaceChildren(...top.map(song => card(song, true)));
+  longevityStatus.textContent = !country.value ? '請選擇國家。' : top.length ? '' : '此國家目前沒有長尾霸榜資料。';
+}
+async function loadLongevity() {
+  longevityRetry.hidden = true;
+  longevityStatus.textContent = '正在載入長尾霸榜…';
+  longevityCards.setAttribute('aria-busy', 'true');
+  try {
+    const data = await fetchJSON('GenJSON_ByMusicInfo_TrendSongs_LongevityTop3.json');
+    if (!Array.isArray(data) || data.some(row => !row || typeof row.counttry !== 'string'
+      || typeof row.songid !== 'string'
+      || !['total_score', 'appear_count', 'best_rank', 'longevity_rank', 'card_order'].every(key => Number.isInteger(row[key]) && row[key] > 0)
+      || row.avg_rank == null || !Number.isFinite(Number(row.avg_rank)))) throw new Error('Invalid longevity data');
+    longevityRows = data;
+    renderLongevity();
+  } catch (error) {
+    longevityStatus.textContent = '長尾霸榜資料尚未提供或載入失敗，請重試。';
+    longevityRetry.hidden = false;
+    console.error('Unable to load longevity Top 3:', error);
+  } finally {
+    longevityCards.setAttribute('aria-busy', 'false');
+  }
+}
+longevityRetry.addEventListener('click', loadLongevity);
+loadLongevity();
 load();

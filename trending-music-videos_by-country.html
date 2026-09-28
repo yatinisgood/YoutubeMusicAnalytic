@@ -15,8 +15,15 @@
     <h1>各國發燒音樂排行榜</h1>
     <p class="credit">Create With <span class="heart" aria-label="愛心">♥</span> By: <strong>Sherlock Tsai</strong> <strong>(自2024-01-11開始追蹤)</strong></p>
   </header>
-  <nav class="page-nav" aria-label="榜單頁面"><a href="index.html">全球冠軍總覽</a><a href="by-country.html" aria-current="page">各國完整排行榜</a></nav>
+  <nav class="page-nav" aria-label="榜單頁面"><a href="index.html">首頁</a><a href="trending-music-videos.html">全球冠軍總覽</a><a href="trending-music-videos_by-country.html" aria-current="page">各國完整排行榜</a></nav>
   <main aria-label="各國完整發燒音樂排行榜">
+    <section class="all-time" aria-labelledby="longevity-title">
+      <h2 id="longevity-title">長尾霸榜 Top 3</h2>
+      <p class="ranking-note">歷史榜單累計積分：第 1 名 30 分，依序遞減至第 30 名 1 分。隨國家切換，不受所選日期影響。</p>
+      <p id="longevity-status" class="ranking-note" role="status">正在載入長尾霸榜…</p>
+      <button id="longevity-retry" class="longevity-retry" type="button" hidden>重新載入長尾霸榜</button>
+      <div id="longevity-cards" class="layout longevity-cards" aria-busy="true"></div>
+    </section>
     <div class="timeline country-filters">
       <label for="country">國家</label><select id="country" disabled></select>
       <label for="date">日期</label><select id="date" disabled></select>
