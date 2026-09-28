@@ -36,11 +36,11 @@ function bookmarkButton(song) {
   const country = song.counttry;
   const key = countryKey(country);
   const selected = bookmarks.has(key);
-  const button = element('button', 'bookmark-button', selected ? '★ 已收藏' : '☆ 收藏');
+  const button = element('button', 'bookmark-button', selected ? '★ 已關注' : '☆ 關注');
   button.type = 'button';
   button.dataset.country = key;
   button.setAttribute('aria-pressed', String(selected));
-  button.setAttribute('aria-label', `${selected ? '取消收藏' : '收藏'}${country}`);
+  button.setAttribute('aria-label', `${selected ? '取消關注' : '關注'}${country}`);
   button.addEventListener('click', () => {
     if (bookmarks.has(key)) bookmarks.delete(key); else bookmarks.add(key);
     const saved = saveBookmarks();
