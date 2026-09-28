@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="全球與各國每週熱播歌曲冠軍榜。">
+  <title>全球每週熱播歌曲</title>
+  <script src="assets/theme.js"></script>
+  <link rel="stylesheet" href="assets/trend-songs.css">
+  <script src="assets/top-songs-weekly.js" defer></script>
+</head>
+<body>
+  <header>
+    <div class="theme-controls"><button id="theme-toggle" type="button" aria-pressed="false" hidden>暗色模式</button></div>
+    <h1>全球每週熱播歌曲</h1>
+    <p class="credit">Create With <span class="heart" aria-label="愛心">♥</span> By: <strong>Sherlock Tsai</strong> <strong>(自2024-01-11開始追蹤)</strong></p>
+  </header>
+  <nav class="page-nav" aria-label="榜單頁面"><a href="index.html">首頁</a><a href="trending-music-videos.html">全球發燒影片</a><a href="top-songs-weekly.html" aria-current="page">每週熱播歌曲</a></nav>
+  <main aria-label="全球與各國每週熱播歌曲冠軍">
+    <div class="timeline"><button id="previous" type="button" aria-label="上一個榜單時間" disabled>←</button><label for="week">榜單時間</label><select id="week" disabled></select><button id="next" type="button" aria-label="下一個榜單時間" disabled>→</button></div>
+    <p class="ranking-note">全球冠軍固定置頂；★ 關注的國家優先，其餘依英文國名 A–Z 排序。每張卡片代表該地區當週第一名。</p>
+    <p id="bookmark-status" class="sr-only" role="status"></p>
+    <p id="status" class="status" role="status">正在載入周別清單…</p>
+    <button id="retry" type="button" hidden>重新載入</button>
+    <div id="weekly-layout" class="layout" aria-busy="true"><section id="featured" aria-label="全球冠軍"></section><section id="cards" class="cards" aria-label="各國冠軍歌曲"></section></div>
+  </main>
+  <footer>全球每週熱播歌曲 · 資料來源：YouTube 音樂榜單<br>當週播放次數來自所選週榜；總播放次數採最新觀看次數資料。</footer>
+  <noscript><p class="status">請啟用 JavaScript 以讀取音樂榜單。</p></noscript>
+</body>
+</html>

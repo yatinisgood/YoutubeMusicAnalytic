@@ -4,7 +4,7 @@ const snapshots = new Map();
 let dateFiles = new Map();
 let snapshotRequest = 0;
 const number = new Intl.NumberFormat('zh-TW');
-const countryCodes = Object.fromEntries(`阿根廷:AR 澳洲:AU 奧地利:AT 比利時:BE 玻利維亞:BO 巴西:BR 加拿大:CA 智利:CL 哥倫比亞:CO 哥斯大黎加:CR 捷克:CZ 丹麥:DK 多明尼加共和國:DO 厄瓜多:EC 埃及:EG 薩爾瓦多:SV 愛沙尼亞:EE 芬蘭:FI 法國:FR 德國:DE 瓜地馬拉:GT 宏都拉斯:HN 香港:HK 匈牙利:HU 冰島:IS 印度:IN 印尼:ID 愛爾蘭:IE 以色列:IL 義大利:IT 日本:JP 肯亞:KE 南韓:KR 盧森堡:LU 馬來西亞:MY 墨西哥:MX 荷蘭:NL 紐西蘭:NZ 尼加拉瓜:NI 奈及利亞:NG 挪威:NO 巴拿馬:PA 巴拉圭:PY 祕魯:PE 菲律賓:PH 波蘭:PL 葡萄牙:PT 羅馬尼亞:RO 俄羅斯:RU 沙烏地阿拉伯:SA 塞爾維亞:RS 新加坡:SG 南非:ZA 西班牙:ES 瑞典:SE 瑞士:CH 台灣:TW 坦尚尼亞:TZ 泰國:TH 烏干達:UG 烏克蘭:UA 阿拉伯聯合大公國:AE 英國:GB 美國:US 烏拉圭:UY 越南:VN 辛巴威:ZW`.split(' ').map(pair => pair.split(':')));
+const countryCodes = Object.fromEntries(`土耳其:TR 阿根廷:AR 澳洲:AU 奧地利:AT 比利時:BE 玻利維亞:BO 巴西:BR 加拿大:CA 智利:CL 哥倫比亞:CO 哥斯大黎加:CR 捷克:CZ 丹麥:DK 多明尼加共和國:DO 厄瓜多:EC 埃及:EG 薩爾瓦多:SV 愛沙尼亞:EE 芬蘭:FI 法國:FR 德國:DE 瓜地馬拉:GT 宏都拉斯:HN 香港:HK 匈牙利:HU 冰島:IS 印度:IN 印尼:ID 愛爾蘭:IE 以色列:IL 義大利:IT 日本:JP 肯亞:KE 南韓:KR 盧森堡:LU 馬來西亞:MY 墨西哥:MX 荷蘭:NL 紐西蘭:NZ 尼加拉瓜:NI 奈及利亞:NG 挪威:NO 巴拿馬:PA 巴拉圭:PY 祕魯:PE 菲律賓:PH 波蘭:PL 葡萄牙:PT 羅馬尼亞:RO 俄羅斯:RU 沙烏地阿拉伯:SA 塞爾維亞:RS 新加坡:SG 南非:ZA 西班牙:ES 瑞典:SE 瑞士:CH 台灣:TW 坦尚尼亞:TZ 泰國:TH 烏干達:UG 烏克蘭:UA 阿拉伯聯合大公國:AE 英國:GB 美國:US 烏拉圭:UY 越南:VN 辛巴威:ZW`.split(' ').map(pair => pair.split(':')));
 const englishCountries = new Intl.DisplayNames(['en'], { type: 'region' });
 const countryOrder = new Intl.Collator('en', { sensitivity: 'base' });
 const bookmarkCookie = 'music_atlas_countries';
@@ -189,7 +189,7 @@ async function loadSnapshot() {
     if (!snapshots.has(label)) {
       const filename = dateFiles.get(label);
       if (!filename) throw new Error('Unknown snapshot');
-      const response = await fetch(`./data/${filename}`, { cache: 'no-cache' });
+      const response = await fetch(`./data/GenJSON_ByMusicInfo_TrendSongs_ByCountry/${filename}`, { cache: 'no-cache' });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const rows = await response.json();
       if (!Array.isArray(rows) || rows.some(row => !row || typeof row.songid !== 'string'
@@ -221,7 +221,7 @@ async function load() {
   ui.cards.replaceChildren();
   ui.featured.replaceChildren();
   try {
-    const response = await fetch('./data/GenJSON_ByMusicInfo_TrendSongs_ByCountry_index.json', { cache: 'no-cache' });
+    const response = await fetch('./data/GenJSON_ByMusicInfo_TrendSongs_ByCountry/GenJSON_ByMusicInfo_TrendSongs_ByCountry_index.json', { cache: 'no-cache' });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const entries = await response.json();
     if (!Array.isArray(entries) || entries.some(entry => !entry || !/^\d{8}$/.test(entry.label)

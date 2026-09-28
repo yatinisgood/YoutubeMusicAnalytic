@@ -103,7 +103,7 @@ async function loadDate() {
   try {
     let data = cache.get(label);
     if (!data) {
-      data = await fetchJSON(files.get(label));
+      data = await fetchJSON(`GenJSON_ByMusicInfo_TrendSongs_ByCountry/${files.get(label)}`);
       if (!Array.isArray(data) || data.some(row => !row || typeof row.songid !== 'string'
         || typeof row.counttry !== 'string' || String(row.LABEL) !== label
         || !Number.isInteger(Number(row.rank)) || Number(row.rank) < 1)) throw new Error('Invalid daily chart');
@@ -136,7 +136,7 @@ async function load() {
   date.disabled = true;
   status.textContent = '正在載入日期清單…';
   try {
-    const entries = await fetchJSON('GenJSON_ByMusicInfo_TrendSongs_ByCountry_index.json');
+    const entries = await fetchJSON('GenJSON_ByMusicInfo_TrendSongs_ByCountry/GenJSON_ByMusicInfo_TrendSongs_ByCountry_index.json');
     if (!Array.isArray(entries) || entries.some(entry => !entry || !/^\d{8}$/.test(entry.label)
       || entry.file !== `GenJSON_ByMusicInfo_TrendSongs_ByCountry_${entry.label}.json`)) throw new Error('Invalid date index');
     files = new Map(entries.map(entry => [entry.label, entry.file]));

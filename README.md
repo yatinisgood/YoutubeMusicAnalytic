@@ -8,7 +8,7 @@
 
 採用灰底白色卡片、大型縮圖與國家標籤，不提供搜尋、國家篩選或排序控制。透過榜單時間下拉選單或左右按鈕切換 snapshot，預設顯示最新 LABEL。精選卡片依所選時間內各影片奪冠的不同國家數選出「最多國家第一」，同數時依 JSON 順序選取；保留所有國家的冠軍卡片。桌面版每列 6 欄，精選卡片橫跨 2 欄、與其他卡片等高（第一列為精選加 4 張一般卡片），後續每列 6 張；較窄螢幕依序改為 3 欄、2 欄、1 欄。
 
-網頁先讀取 `data/GenJSON_ByMusicInfo_TrendSongs_ByCountry_index.json` 日期清單，再按需讀取 `data/GenJSON_ByMusicInfo_TrendSongs_ByCountry_YYYYMMDD.json`，僅顯示 `rank = 1` 的各國冠軍（每日檔包含其他排名），更新 JSON 後重新整理頁面即可顯示最新資料，不需編譯。國家欄位沿用資料中的 `counttry`；每筆資料代表一個國家或地區的冠軍，同一影片可能在多國奪冠。LABEL 為榜單 snapshot 的時間；觀看次數仍取最新觀看次數快照，並非當時的歷史觀看次數。
+網頁先讀取 `data/GenJSON_ByMusicInfo_TrendSongs_ByCountry/GenJSON_ByMusicInfo_TrendSongs_ByCountry_index.json` 日期清單，再按需讀取 `data/GenJSON_ByMusicInfo_TrendSongs_ByCountry/GenJSON_ByMusicInfo_TrendSongs_ByCountry_YYYYMMDD.json`，僅顯示 `rank = 1` 的各國冠軍（每日檔包含其他排名），更新 JSON 後重新整理頁面即可顯示最新資料，不需編譯。國家欄位沿用資料中的 `counttry`；每筆資料代表一個國家或地區的冠軍，同一影片可能在多國奪冠。LABEL 為榜單 snapshot 的時間；觀看次數仍取最新觀看次數快照，並非當時的歷史觀看次數。
 
 執行 `python3 GenJSON_ByMusicInfo_TrendSongs_ByCountry.py` 可從 BigQuery 重新匯出每日榜單並更新日期清單（需原有 Google Cloud 憑證與依賴）。
 
@@ -35,3 +35,11 @@ python3 -m http.server 8000 --directory HTML_Github
 計分只採第 1–30 名，每次入榜得 `31 - rank` 分。以國家、歌曲 ID、LABEL 去重；同一快照若存在衝突名次，取最高名次。按國家與歌曲累計積分、入榜快照次數、最高及平均名次，影片名稱等欄位取最新有效榜單資訊，避免名稱或縮圖變更造成分組拆散。排名使用 `DENSE_RANK`，同分同名次；每國最多三張卡片，同分依 songid 選取。歌手及最新總觀看次數先彙整為每首一筆再關聯，避免放大積分。統計範圍為 BigQuery 現有歷史資料，入榜次數不是觀看次數，也不是連續在榜天數。
 
 全球冠軍卡片的國家標籤可直接開啟各國榜單，帶入目前榜單日期與國家。例如：`trending-music-videos_by-country.html?date=2026-09-28&country=日本`。目標頁面接受 `date=YYYY-MM-DD` 或 `YYYYMMDD`，以及 `country` 中文國名；網址中的國名會自動編碼。缺少參數時沿用預設值，指定日期不存在時提示並改用最新日期，指定國家當日無資料時保留該國家並顯示無資料提示。長尾 Top 3 同步顯示指定國家的統計。
+
+### 每週熱播歌曲
+
+`top-songs-weekly.html` 讀取 `data/GenJSON_ByMusicInfo_TopSongsWeekly/` 內的周別索引與 `GenJSON_ByMusicInfo_TopSongsWeekly_YYYYMMDD.json`，預設最新一週。周別下拉選單以 `YYYY-MM-DD` 顯示 LABEL。現有匯出 SQL 僅包含各地區當週第一名，全球卡片置頂並佔六欄網格中的兩欄，其餘依英文國名 A–Z 排序；小螢幕自動縮減欄數。顯示歌手、發行日、當週播放次數、在榜週數、上週名次及最新總播放次數；上週名次為 0 時顯示「新進榜」。來源無片長欄位，因此不顯示片長。
+
+`GenJSON_ByMusicInfo_TopSongsWeekly.py` 在匯出日期分檔後，會同步更新同目錄的 `GenJSON_ByMusicInfo_TopSongsWeekly_index.json`。首頁已提供每週熱播歌曲入口。
+
+每週熱播歌曲卡片支援「☆ 關注／★ 已關注」。全球卡片固定置頂，其餘以關注國家優先，各組依英文國名 A–Z 排序。與發燒影片頁共用國家收藏 Cookie，保存一年；切換週榜或重新開啟頁面會保留關注紀錄。若瀏覽器無法儲存 Cookie，會提示且本次頁面仍保留選擇。

@@ -26,3 +26,12 @@
 .longevity-cards>.card{grid-column:span 2;height:440px}.longevity-stats{text-align:center;font-size:13px;line-height:1.7;color:var(--muted);margin:0 0 8px}.longevity-card .ranking-total{color:var(--ranking)}.longevity-cards .card:nth-child(1) .badge{background:#e5bb48;color:#382900}.longevity-cards .card:nth-child(2) .badge{background:#cbd1d8;color:#29313b}.longevity-cards .card:nth-child(3) .badge{background:#ac6539;color:#fff}#longevity-status:empty{display:none}.longevity-retry{display:block;margin:0 auto 20px;padding:10px 18px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font:inherit;cursor:pointer}.longevity-retry[hidden]{display:none}@media(max-width:1199px){.longevity-cards>.card{grid-column:span 1}}@media(max-width:750px){.longevity-cards{grid-template-columns:1fr}.longevity-cards>.card{height:auto;min-height:420px}}
 
  a.badge{text-decoration:none}a.badge:hover{text-decoration:underline;text-underline-offset:3px}
+
+/* Weekly global champion: warm gold accents in both themes. */
+#weekly-layout #featured>.card{--text:#493511;--muted:#70572c;--divider:#d9bd7b;--control:#654714;--control-text:#fff8e5;color:var(--text);background:linear-gradient(145deg,#fff9e9,#f5e4b8);border:2px solid #bb8b2d;box-shadow:0 4px 16px #91651c26}
+#weekly-layout #featured .badge{background:linear-gradient(135deg,#f7d774,#dfac35);color:#3b2909;box-shadow:0 5px 15px #80551533}
+:root[data-theme="dark"] #weekly-layout #featured>.card{--text:#fff2d1;--muted:#dec99e;--divider:#756039;--control:#f0cd79;--control-text:#302719;background:linear-gradient(145deg,#3b3222,#29251e);border-color:#c79b42;box-shadow:0 4px 18px #0005}
+
+/* Allow weekly chart details and actions to fit without overflowing. */
+#weekly-layout .card{height:auto;min-height:460px}
+@media(max-width:460px){#weekly-layout .card{min-height:480px}}
