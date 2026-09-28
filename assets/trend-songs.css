@@ -35,3 +35,5 @@
 /* Allow weekly chart details and actions to fit without overflowing. */
 #weekly-layout .card{height:auto;min-height:460px}
 @media(max-width:460px){#weekly-layout .card{min-height:480px}}
+
+#global-top-cards .card{height:auto;min-height:460px}#global-top-status:empty{display:none}

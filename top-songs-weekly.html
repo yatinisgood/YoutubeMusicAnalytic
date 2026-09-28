@@ -17,6 +17,13 @@
   </header>
   <nav class="page-nav" aria-label="榜單頁面"><a href="index.html">首頁</a><a href="trending-music-videos.html">全球發燒影片</a><a href="top-songs-weekly.html" aria-current="page">每週熱播歌曲</a></nav>
   <main aria-label="全球與各國每週熱播歌曲冠軍">
+    <section class="all-time" aria-labelledby="global-top-title">
+      <h2 id="global-top-title">全球累計奪冠 Top 3</h2>
+      <p class="ranking-note">依歷史全球週榜第一名的累計週數排名，不受所選榜單時間影響。</p>
+      <p id="global-top-status" class="ranking-note" role="status">正在載入全球累計奪冠 Top 3…</p>
+      <button id="global-top-retry" class="longevity-retry" type="button" hidden>重新載入全球 Top 3</button>
+      <div id="global-top-cards" class="top-three" aria-busy="true"></div>
+    </section>
     <div class="timeline"><button id="previous" type="button" aria-label="上一個榜單時間" disabled>←</button><label for="week">榜單時間</label><select id="week" disabled></select><button id="next" type="button" aria-label="下一個榜單時間" disabled>→</button></div>
     <p class="ranking-note">全球冠軍固定置頂；★ 關注的國家優先，其餘依英文國名 A–Z 排序。每張卡片代表該地區當週第一名。</p>
     <p id="bookmark-status" class="sr-only" role="status"></p>

@@ -56,12 +56,12 @@ function videoLink(song, className) {
   link.setAttribute('aria-label', `在 YouTube 觀看：${song.title || '未命名影片'}（開啟新分頁）`);
   return link;
 }
-function card(song) {
+function card(song, allTime = false) {
   const article = element('article', 'card');
   const cover = videoLink(song, 'cover');
   const img = element('img');
   img.alt = '';
-  img.loading = song.country === '全球' ? 'eager' : 'lazy';
+  img.loading = allTime || song.country === '全球' ? 'eager' : 'lazy';
   img.decoding = 'async';
   const fallback = `https://i.ytimg.com/vi/${encodeURIComponent(song.encryptedVideoId)}/hqdefault.jpg`;
   let thumbnail;
@@ -72,7 +72,7 @@ function card(song) {
     else img.remove();
   });
   cover.append(img);
-  const badge = element('div', 'badge', song.country);
+  const badge = element('div', 'badge', allTime ? `全球 TOP ${song.rank}` : song.country);
   const title = element('h2', 'song-title');
   const link = videoLink(song);
   link.textContent = song.title || '未命名影片';
@@ -91,16 +91,22 @@ function card(song) {
   button.title = '前往 YouTube 觀看';
   // Static icon; JSON values are always inserted as text.
   button.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.6 7.2a3 3 0 0 0-2.1-2.1C17.7 4.6 12 4.6 12 4.6s-5.7 0-7.5.5a3 3 0 0 0-2.1 2.1A31 31 0 0 0 2 12a31 31 0 0 0 .4 4.8 3 3 0 0 0 2.1 2.1c1.8.5 7.5.5 7.5.5s5.7 0 7.5-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 22 12a31 31 0 0 0-.4-4.8ZM10 15.5v-7l6 3.5-6 3.5Z"/></svg>';
-  if (song.country && song.country !== '全球') {
+  if (!allTime && song.country && song.country !== '全球') {
     actions.append(bookmarkButton(song));
     article.classList.toggle('bookmarked', bookmarks.has(countryKey(song.country)));
   }
   actions.append(button);
   article.append(cover, badge, title, details);
+  if (allTime) {
+    article.append(element('p', 'ranking-total', `累計奪冠 ${formatNumber(song.top1_weeks_count)} 週`));
+    article.append(element('p', 'details', `首次奪冠：${formatDate(song.first_top1_week)}`));
+    article.append(element('p', 'details', `最近奪冠：${formatDate(song.latest_top1_week)}`));
+  } else {
   const lastRank = song.lastweekrank;
   const previous = String(lastRank) === '0' ? '新進榜' : lastRank == null || lastRank === '' ? '未提供' : `第 ${lastRank} 名`;
   article.append(element('p', 'details', `當週播放次數：${formatNumber(song.viewcounts)}`));
   article.append(element('p', 'countries', `在榜 ${formatNumber(song.onboardweeks)} 週 · 上週：${previous}`));
+  }
   article.append(plays, actions);
   return article;
 }
@@ -211,3 +217,33 @@ for (const [button, step] of [[previous, -1], [next, 1]]) {
 }
 retry.addEventListener('click', () => files.size ? loadWeek() : load());
 load();
+
+async function loadGlobalTop3() {
+  const container = document.getElementById('global-top-cards');
+  const message = document.getElementById('global-top-status');
+  const retryButton = document.getElementById('global-top-retry');
+  retryButton.hidden = true;
+  container.setAttribute('aria-busy', 'true');
+  message.textContent = '正在載入全球累計奪冠 Top 3…';
+  try {
+    const response = await fetch('./data/GenJSON_ByMusicInfo_GlobalTopSongsWeekly.json', { cache: 'no-cache' });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const rows = await response.json();
+    if (!Array.isArray(rows) || rows.length > 3 || rows.some(row => !row
+      || typeof row.encryptedVideoId !== 'string'
+      || !Number.isInteger(row.rank) || row.rank < 1
+      || !Number.isInteger(row.top1_weeks_count) || row.top1_weeks_count < 1
+      || !/^\d{8}$/.test(String(row.first_top1_week))
+      || !/^\d{8}$/.test(String(row.latest_top1_week)))) throw new Error('Invalid global Top 3');
+    container.replaceChildren(...rows.map(song => card(song, true)));
+    message.textContent = rows.length ? '' : '目前沒有全球累計奪冠資料。';
+  } catch (error) {
+    message.textContent = '全球累計奪冠資料尚未提供或載入失敗，請重試。';
+    retryButton.hidden = false;
+    console.error('Unable to load global Top 3:', error);
+  } finally {
+    container.setAttribute('aria-busy', 'false');
+  }
+}
+document.getElementById('global-top-retry').addEventListener('click', loadGlobalTop3);
+loadGlobalTop3();
