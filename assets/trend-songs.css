@@ -20,3 +20,5 @@
 .release-duration{font-size:12px;white-space:nowrap}
 
 .dominance-breakdown{display:block;font-size:12px;font-weight:400;line-height:1.5;color:var(--muted)}.top-three .card{height:420px}#dominance-status:empty{display:none}
+
+.page-nav{display:flex;justify-content:center;gap:24px;margin:0 14px 28px;flex-wrap:wrap}.page-nav a{color:var(--text);text-underline-offset:6px}.page-nav a[aria-current="page"]{font-weight:700}.country-filters{flex-wrap:wrap}.country-filters select{min-width:140px}.country-filters+ .status{padding:0 12px 24px;margin:0}

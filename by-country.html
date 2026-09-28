@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="依國家與日期瀏覽完整發燒音樂影片排行榜。">
+  <title>各國發燒音樂排行榜</title>
+  <script src="assets/theme.js"></script>
+  <link rel="stylesheet" href="assets/trend-songs.css">
+  <script src="assets/trend-songs-country.js" defer></script>
+</head>
+<body>
+  <header>
+    <div class="theme-controls"><button id="theme-toggle" type="button" aria-pressed="false" hidden>暗色模式</button></div>
+    <h1>各國發燒音樂排行榜</h1>
+    <p class="credit">Create With <span class="heart" aria-label="愛心">♥</span> By: <strong>Sherlock Tsai</strong> <strong>(自2024-01-11開始追蹤)</strong></p>
+  </header>
+  <nav class="page-nav" aria-label="榜單頁面"><a href="index.html">全球冠軍總覽</a><a href="by-country.html" aria-current="page">各國完整排行榜</a></nav>
+  <main aria-label="各國完整發燒音樂排行榜">
+    <div class="timeline country-filters">
+      <label for="country">國家</label><select id="country" disabled></select>
+      <label for="date">日期</label><select id="date" disabled></select>
+    </div>
+    <p id="status" class="status" role="status">正在載入榜單…</p>
+    <button id="retry" type="button" hidden>重新載入</button>
+    <section id="country-cards" class="layout" aria-label="影片排名" aria-busy="true"></section>
+  </main>
+  <footer>各國完整發燒音樂排行榜 · 資料來源：YouTube 音樂榜單<br>總播放次數採最新觀看次數資料，非所選榜單時間的歷史觀看次數。</footer>
+  <noscript><p class="status">請啟用 JavaScript 以讀取音樂榜單。</p></noscript>
+</body>
+</html>
