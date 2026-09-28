@@ -90,8 +90,11 @@ function card(song, countries, ranking) {
   title.append(link);
   title.title = link.textContent;
   const details = element('div', 'details');
-  const seconds = song.videoduration;
-  details.append(element('p', '', `發行日：${song.releasedate || '未提供'}`), element('p', '', `秒數：${seconds != null && seconds !== '' ? seconds : '未提供'}`));
+  const seconds = Number(song.videoduration);
+  const duration = song.videoduration != null && String(song.videoduration).trim() !== '' && Number.isFinite(seconds) && seconds >= 0
+    ? `${Math.floor(seconds / 60)}分${Math.floor(seconds % 60)}秒`
+    : '片長未提供';
+  details.append(element('p', 'release-duration', `發行日：${song.releasedate || '未提供'} · ${duration}`));
   const artist = element('p', 'artist', `歌手：${song.artists || '未提供'}`);
   artist.title = artist.textContent;
   details.append(artist);
