@@ -33,3 +33,5 @@ python3 -m http.server 8000 --directory HTML_Github
 在專案根目錄執行 `.conda/bin/python GenJSON_ByMusicInfo_TrendSongs_LongevityTop3.py`，會從 BigQuery 產生所有國家的 Top 3，已加入 `MainProcess_YTMusic.py` 的更新清單。可使用 `--country 台灣` 查詢單一國家；此模式另存 `GenJSON_ByMusicInfo_TrendSongs_LongevityTop3_SelectedCountry.json`，不覆蓋網站使用的完整資料。
 
 計分只採第 1–30 名，每次入榜得 `31 - rank` 分。以國家、歌曲 ID、LABEL 去重；同一快照若存在衝突名次，取最高名次。按國家與歌曲累計積分、入榜快照次數、最高及平均名次，影片名稱等欄位取最新有效榜單資訊，避免名稱或縮圖變更造成分組拆散。排名使用 `DENSE_RANK`，同分同名次；每國最多三張卡片，同分依 songid 選取。歌手及最新總觀看次數先彙整為每首一筆再關聯，避免放大積分。統計範圍為 BigQuery 現有歷史資料，入榜次數不是觀看次數，也不是連續在榜天數。
+
+全球冠軍卡片的國家標籤可直接開啟各國榜單，帶入目前榜單日期與國家。例如：`trending-music-videos_by-country.html?date=2026-09-28&country=日本`。目標頁面接受 `date=YYYY-MM-DD` 或 `YYYYMMDD`，以及 `country` 中文國名；網址中的國名會自動編碼。缺少參數時沿用預設值，指定日期不存在時提示並改用最新日期，指定國家當日無資料時保留該國家並顯示無資料提示。長尾 Top 3 同步顯示指定國家的統計。

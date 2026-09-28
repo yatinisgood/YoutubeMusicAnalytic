@@ -84,7 +84,15 @@ function card(song, countries, ranking) {
     else img.remove();
   });
   cover.append(img);
-  const badge = element('div', 'badge', ranking ? `霸榜 TOP ${ranking.rank}` : countries ? '最多國家第一' : (song.counttry || '未提供國家'));
+  const isCountryLink = !ranking && !countries && Boolean(song.counttry);
+  const badge = element(isCountryLink ? 'a' : 'div', 'badge', ranking ? `霸榜 TOP ${ranking.rank}` : countries ? '最多國家第一' : (song.counttry || '未提供國家'));
+  if (isCountryLink) {
+    const label = ui.snapshot.value;
+    const date = label.replace(/^(\d{4})(\d{2})(\d{2})$/, '$1-$2-$3');
+    const params = new URLSearchParams({ date, country: song.counttry });
+    badge.href = `trending-music-videos_by-country.html?${params}`;
+    badge.setAttribute('aria-label', `查看${song.counttry} ${date} 的完整排行榜`);
+  }
   const title = element('h2', 'song-title');
   const link = videoLink(song);
   link.textContent = song.title || '未命名影片';

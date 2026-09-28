@@ -1,5 +1,10 @@
 'use strict';
 const number = new Intl.NumberFormat('zh-TW');
+const initialParams = new URLSearchParams(location.search);
+const requestedDate = initialParams.get('date') || '';
+const initialDate = /^\d{4}-\d{2}-\d{2}$/.test(requestedDate)
+  ? requestedDate.replaceAll('-', '') : requestedDate;
+let initialCountry = (initialParams.get('country') || '').trim();
 function formatDate(value) { return String(value ?? '').replace(/^(\d{4})(\d{2})(\d{2})$/, '$1-$2-$3'); }
 function element(tag, className, text) {
   const node = document.createElement(tag);
@@ -107,11 +112,12 @@ async function loadDate() {
     cache.set(label, data);
     if (cache.size > 3) cache.delete(cache.keys().next().value);
     rows = data;
-    const previous = country.value;
+    const previous = country.value || initialCountry;
     const countries = [...new Set([...rows.map(row => row.counttry), ...(previous ? [previous] : [])])]
       .sort(new Intl.Collator('zh-Hant').compare);
     country.replaceChildren(...countries.map(name => new Option(name, name)));
     country.value = previous || (countries.includes('台灣') ? '台灣' : countries[0] || '');
+    initialCountry = '';
     country.disabled = countries.length === 0;
     ready = true;
     render();
@@ -141,6 +147,10 @@ async function load() {
       cards.setAttribute('aria-busy', 'false');
       return;
     }
+    if (files.has(initialDate)) date.value = initialDate;
+    const notice = document.getElementById('parameter-notice');
+    notice.hidden = !requestedDate || files.has(initialDate);
+    notice.textContent = notice.hidden ? '' : '網址指定的日期沒有榜單，已改為最新日期。';
     date.disabled = false;
     await loadDate();
   } catch (error) {
