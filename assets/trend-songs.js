@@ -1,6 +1,8 @@
 'use strict';
 const ui = Object.fromEntries(['all-time', 'top-three', 'status', 'retry', 'featured', 'cards', 'timeline', 'snapshot', 'previous', 'next'].map(id => [id, document.getElementById(id)]));
-let snapshots = new Map();
+const snapshots = new Map();
+let dateFiles = new Map();
+let snapshotRequest = 0;
 const number = new Intl.NumberFormat('zh-TW');
 const countryCodes = Object.fromEntries(`阿根廷:AR 澳洲:AU 奧地利:AT 比利時:BE 玻利維亞:BO 巴西:BR 加拿大:CA 智利:CL 哥倫比亞:CO 哥斯大黎加:CR 捷克:CZ 丹麥:DK 多明尼加共和國:DO 厄瓜多:EC 埃及:EG 薩爾瓦多:SV 愛沙尼亞:EE 芬蘭:FI 法國:FR 德國:DE 瓜地馬拉:GT 宏都拉斯:HN 香港:HK 匈牙利:HU 冰島:IS 印度:IN 印尼:ID 愛爾蘭:IE 以色列:IL 義大利:IT 日本:JP 肯亞:KE 南韓:KR 盧森堡:LU 馬來西亞:MY 墨西哥:MX 荷蘭:NL 紐西蘭:NZ 尼加拉瓜:NI 奈及利亞:NG 挪威:NO 巴拿馬:PA 巴拉圭:PY 祕魯:PE 菲律賓:PH 波蘭:PL 葡萄牙:PT 羅馬尼亞:RO 俄羅斯:RU 沙烏地阿拉伯:SA 塞爾維亞:RS 新加坡:SG 南非:ZA 西班牙:ES 瑞典:SE 瑞士:CH 台灣:TW 坦尚尼亞:TZ 泰國:TH 烏干達:UG 烏克蘭:UA 阿拉伯聯合大公國:AE 英國:GB 美國:US 烏拉圭:UY 越南:VN 辛巴威:ZW`.split(' ').map(pair => pair.split(':')));
 const englishCountries = new Intl.DisplayNames(['en'], { type: 'region' });
@@ -82,7 +84,7 @@ function card(song, countries, ranking) {
     else img.remove();
   });
   cover.append(img);
-  const badge = element('div', 'badge', ranking ? `累計第一 TOP ${ranking.rank}` : countries ? '最多國家第一' : (song.counttry || '未提供國家'));
+  const badge = element('div', 'badge', ranking ? `霸榜 TOP ${ranking.rank}` : countries ? '最多國家第一' : (song.counttry || '未提供國家'));
   const title = element('h2', 'song-title');
   const link = videoLink(song);
   link.textContent = song.title || '未命名影片';
@@ -116,31 +118,36 @@ function card(song, countries, ranking) {
     summary.title = summary.textContent;
     article.append(summary);
   }
-  if (ranking) article.append(element('p', 'ranking-total', `累計 ${number.format(ranking.count)} 次第一`));
+  if (ranking) {
+    const total = element('p', 'ranking-total', `累計 ${number.format(ranking.count)} 次第一`);
+    total.append(element('span', 'dominance-breakdown', `${number.format(ranking.countryCount)} 個國家 · ${number.format(ranking.days)} 個榜單日`));
+    article.append(total);
+  }
   article.append(plays, actions);
   return article;
 }
-function rankAllSnapshots(songs) {
-  const groups = new Map();
-  for (const song of songs) {
-    const label = String(song.LABEL ?? '').trim();
-    const country = String(song.counttry ?? '').trim();
-    if (!label || !country || !song.songid) continue;
-    if (!groups.has(song.songid)) groups.set(song.songid, { song, wins: new Set() });
-    const group = groups.get(song.songid);
-    group.wins.add(JSON.stringify([label, country]));
-    // Use the most recent snapshot's metadata for the fixed summary cards.
-    if (label > String(group.song.LABEL).trim()) group.song = song;
+async function loadDominanceTop3() {
+  const section = ui['all-time'];
+  const status = document.getElementById('dominance-status');
+  section.hidden = false;
+  status.textContent = '正在載入霸榜 Top 3…';
+  try {
+    const response = await fetch('./data/GenJSON_ByMusicInfo_TrendSongs_DominanceTop3.json', { cache: 'no-cache' });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const top = await response.json();
+    if (!Array.isArray(top) || top.length > 3 || top.some(row => !row || typeof row.songid !== 'string'
+      || !['total_first_place_times', 'country_covered', 'active_days'].every(field => Number.isInteger(row[field]) && row[field] >= 0))) {
+      throw new Error('Invalid dominance data');
+    }
+    ui['top-three'].replaceChildren(...top.map((song, index) => card(song, null, {
+      rank: index + 1, count: song.total_first_place_times,
+      countryCount: song.country_covered, days: song.active_days,
+    })));
+    status.textContent = top.length ? '' : '目前沒有霸榜資料。';
+  } catch (error) {
+    status.textContent = '霸榜資料尚未提供或載入失敗。';
+    console.error('Unable to load dominance top 3:', error);
   }
-  return [...groups.values()]
-    .map(group => ({ song: group.song, count: group.wins.size }))
-    .sort((a, b) => b.count - a.count || a.song.songid.localeCompare(b.song.songid))
-    .slice(0, 3);
-}
-function renderAllTime(songs) {
-  const top = rankAllSnapshots(songs);
-  ui['top-three'].replaceChildren(...top.map((entry, index) => card(entry.song, null, { rank: index + 1, count: entry.count })));
-  ui['all-time'].hidden = top.length === 0;
 }
 function renderSnapshot() {
   const label = ui.snapshot.value;
@@ -159,47 +166,81 @@ function renderSnapshot() {
   ui.status.hidden = songs.length > 0;
   ui.status.textContent = '目前沒有榜單資料。';
 }
-async function load() {
+async function loadSnapshot() {
+  const request = ++snapshotRequest;
+  const label = ui.snapshot.value;
+  ui.previous.disabled = ui.snapshot.selectedIndex <= 0;
+  ui.next.disabled = ui.snapshot.selectedIndex >= ui.snapshot.options.length - 1;
   ui.retry.hidden = true;
   ui.status.hidden = false;
-  ui.status.textContent = '正在載入榜單…';
+  ui.status.textContent = '正在載入所選日期…';
+  ui.cards.replaceChildren();
+  ui.featured.replaceChildren();
+  if (!label) { renderSnapshot(); return; }
   try {
-    const response = await fetch('./data/GenHtml_ByMusicInfo_TrendSongs.json', { cache: 'no-cache' });
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    const songs = await response.json();
-    if (!Array.isArray(songs) || songs.some(row => !row || typeof row !== 'object' || typeof row.songid !== 'string')) throw new Error('Invalid chart data');
-    renderAllTime(songs);
-    snapshots = new Map();
-    for (const song of songs) {
-      const label = String(song.LABEL ?? '').trim();
-      if (!snapshots.has(label)) snapshots.set(label, []);
-      snapshots.get(label).push(song);
+    if (!snapshots.has(label)) {
+      const filename = dateFiles.get(label);
+      if (!filename) throw new Error('Unknown snapshot');
+      const response = await fetch(`./data/${filename}`, { cache: 'no-cache' });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const rows = await response.json();
+      if (!Array.isArray(rows) || rows.some(row => !row || typeof row.songid !== 'string'
+        || String(row.LABEL) !== label || !Number.isFinite(Number(row.rank)))) throw new Error('Invalid daily chart');
+      if (request !== snapshotRequest) return;
+      // Daily files include all ranks; this page shows only country champions.
+      const unique = new Map();
+      for (const row of rows) {
+        if (Number(row.rank) === 1) unique.set(JSON.stringify([row.counttry, row.songid]), row);
+      }
+      snapshots.set(label, [...unique.values()]);
+      // Keep only five days of champion rows, never all historical chart rows.
+      if (snapshots.size > 5) snapshots.delete(snapshots.keys().next().value);
     }
-    const dates = [...snapshots.keys()].sort();
-    ui.snapshot.replaceChildren(...dates.map(label => {
-      const displayDate = /^\d{8}$/.test(label)
-        ? `${label.slice(0, 4)}-${label.slice(4, 6)}-${label.slice(6, 8)}`
-        : label;
-      return new Option(displayDate || '未提供時間', label);
-    }));
-    ui.snapshot.value = dates.at(-1) ?? '';
-    ui.timeline.hidden = dates.length === 0;
-    renderSnapshot();
+    if (request === snapshotRequest) renderSnapshot();
   } catch (error) {
-    ui.status.textContent = location.protocol === 'file:' ? '請透過本機 HTTP 伺服器或 GitHub Pages 開啟此頁面，以讀取 JSON 資料。' : '榜單載入失敗，請稍後重試。';
+    if (request !== snapshotRequest) return;
+    ui.status.textContent = '這個日期的榜單載入失敗，請重試或選擇其他日期。';
     ui.retry.hidden = false;
-    console.error('Unable to load trend songs:', error);
+    console.error('Unable to load daily chart:', error);
   }
 }
-ui.snapshot.addEventListener('change', renderSnapshot);
+async function load() {
+  ++snapshotRequest;
+  ui.retry.hidden = true;
+  ui.status.hidden = false;
+  ui.status.textContent = '正在載入日期清單…';
+  ui.timeline.hidden = true;
+  ui.cards.replaceChildren();
+  ui.featured.replaceChildren();
+  try {
+    const response = await fetch('./data/GenJSON_ByMusicInfo_TrendSongs_ByCountry_index.json', { cache: 'no-cache' });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const entries = await response.json();
+    if (!Array.isArray(entries) || entries.some(entry => !entry || !/^\d{8}$/.test(entry.label)
+      || entry.file !== `GenJSON_ByMusicInfo_TrendSongs_ByCountry_${entry.label}.json`)) throw new Error('Invalid date index');
+    dateFiles = new Map(entries.map(entry => [entry.label, entry.file]));
+    const dates = [...dateFiles.keys()].sort();
+    const previous = ui.snapshot.value;
+    ui.snapshot.replaceChildren(...dates.map(label => new Option(`${label.slice(0, 4)}-${label.slice(4, 6)}-${label.slice(6, 8)}`, label)));
+    ui.snapshot.value = dateFiles.has(previous) ? previous : dates.at(-1) ?? '';
+    ui.timeline.hidden = dates.length === 0;
+    await loadSnapshot();
+  } catch (error) {
+    ui.status.textContent = location.protocol === 'file:' ? '請透過本機 HTTP 伺服器或 GitHub Pages 開啟此頁面，以讀取 JSON 資料。' : '日期清單載入失敗，請稍後重試。';
+    ui.retry.hidden = false;
+    console.error('Unable to load date index:', error);
+  }
+}
+ui.snapshot.addEventListener('change', loadSnapshot);
 for (const [button, step] of [[ui.previous, -1], [ui.next, 1]]) {
   button.addEventListener('click', () => {
     const index = ui.snapshot.selectedIndex + step;
     if (index >= 0 && index < ui.snapshot.options.length) {
       ui.snapshot.selectedIndex = index;
-      renderSnapshot();
+      loadSnapshot();
     }
   });
 }
-ui.retry.addEventListener('click', load);
+ui.retry.addEventListener('click', () => { load(); loadDominanceTop3(); });
+loadDominanceTop3();
 load();
