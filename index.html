@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="各國排行第一的發燒音樂影片。">
+  <title>全球發燒音樂影片</title>
+  <link rel="stylesheet" href="assets/trend-songs.css">
+  <script src="assets/trend-songs.js" defer></script>
+</head>
+<body>
+  <header>
+    <h1>全球發燒音樂影片</h1>
+    <p class="credit">Create With <span class="heart" aria-label="愛心">♥</span> By: <strong>Sherlock Tsai</strong> <strong>(自2024-01-11開始追蹤)</strong></p>
+  </header>
+  <main aria-label="各國排行第一的發燒音樂影片">
+    <section id="all-time" class="all-time" aria-labelledby="all-time-title" hidden>
+      <h2 id="all-time-title">累計第一 Top 3</h2>
+      <p class="ranking-note">加總所有榜單時間的各國第一，每個時間、每個國家各計一次。</p>
+      <div id="top-three" class="top-three"></div>
+    </section>
+    <div class="timeline" id="timeline" hidden><button id="previous" type="button" aria-label="上一個時間點">←</button><label for="snapshot">榜單時間</label><select id="snapshot" aria-label="榜單時間"></select><button id="next" type="button" aria-label="下一個時間點">→</button></div>
+    <p id="status" class="status" role="status">正在載入榜單…</p>
+    <button id="retry" type="button" hidden>重新載入</button>
+    <div class="layout"><section id="featured" aria-label="最多國家第一"></section><section id="cards" class="cards" aria-label="各國冠軍影片"></section></div>
+  </main>
+  <footer>各國排行第一的發燒音樂（影片） · 資料來源：YouTube 音樂榜單<br>總播放次數採最新觀看次數資料，非所選榜單時間的歷史觀看次數。</footer>
+  <noscript><p class="status">請啟用 JavaScript 以讀取音樂榜單。</p></noscript>
+</body>
+</html>
