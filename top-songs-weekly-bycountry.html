@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="依國家與日期瀏覽完整每週熱播歌曲排行榜。">
+  <title>各國每週熱播歌曲排行榜</title>
+  <script src="assets/theme.js"></script>
+  <link rel="stylesheet" href="assets/trend-songs.css">
+  <script src="assets/top-songs-weekly-bycountry.js" defer></script>
+</head>
+<body>
+  <header>
+    <div class="theme-controls"><button id="theme-toggle" type="button" aria-pressed="false" hidden>暗色模式</button></div>
+    <h1>各國每週熱播歌曲排行榜</h1>
+    <p class="credit">Create With <span class="heart" aria-label="愛心">♥</span> By: <strong>Sherlock Tsai</strong> <strong>(自2024-01-11開始追蹤)</strong></p>
+  </header>
+  <nav class="page-nav" aria-label="網站導覽"><a href="index.html">回首頁</a><a href="top-songs-weekly.html">每週熱播歌曲冠軍總覽</a></nav>
+  <main aria-label="各國完整每週熱播歌曲排行榜">
+    <div class="timeline country-filters">
+      <label for="country">國家</label><select id="country" disabled></select>
+      <label for="date">週別（LABEL）</label><select id="date" disabled></select>
+    </div>
+    <p class="ranking-note">每個國家最多顯示 100 首，依當週播放次數由高到低排列；卡片序號代表此排序。</p>
+    <p id="parameter-notice" class="ranking-note" role="status" hidden></p>
+    <p id="status" class="status" role="status">正在載入榜單…</p>
+    <button id="retry" type="button" hidden>重新載入</button>
+    <section id="country-cards" class="layout weekly-country-cards" aria-label="每週熱播歌曲 Top 100" aria-busy="true"></section>
+  </main>
+  <footer>各國完整每週熱播歌曲排行榜 · 資料來源：<a href="https://charts.youtube.com/" target="_blank" rel="noopener noreferrer">YouTube 音樂榜單</a><br>當週播放次數來自所選週榜；總播放次數採最新觀看次數資料。</footer>
+  <noscript><p class="status">請啟用 JavaScript 以讀取音樂榜單。</p></noscript>
+</body>
+</html>

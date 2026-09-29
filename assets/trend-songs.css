@@ -41,3 +41,5 @@
 #global-board-cards .card{height:auto;min-height:460px}#global-board-cards .ranking-total{color:var(--ranking)}#global-board-status:empty{display:none}
 
 footer a{color:inherit;text-underline-offset:3px}
+
+.weekly-country-cards .card{height:auto;min-height:460px}
