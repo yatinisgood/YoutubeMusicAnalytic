@@ -111,8 +111,6 @@ function card(song, allTime = false, onBoard = false) {
   return article;
 }
 const week = document.getElementById('week');
-const previous = document.getElementById('previous');
-const next = document.getElementById('next');
 const featured = document.getElementById('featured');
 const cards = document.getElementById('cards');
 const status = document.getElementById('status');
@@ -130,10 +128,6 @@ async function fetchJSON(filename) {
   if (!response.ok) throw new Error(`HTTP ${response.status}`);
   return response.json();
 }
-function updateWeekButtons() {
-  previous.disabled = week.disabled || week.selectedIndex <= 0;
-  next.disabled = week.disabled || week.selectedIndex >= week.options.length - 1;
-}
 function renderWeek() {
   const rows = cache.get(week.value) || [];
     // Keep one card per country/video even when joins repeat an identical entry.
@@ -149,7 +143,6 @@ function renderWeek() {
     status.textContent = songs.length ? '此週未提供全球榜單，以下為各國冠軍。' : '此週沒有榜單資料。';
 }
 async function loadWeek() {
-  updateWeekButtons();
   const request = ++requestId;
   const label = week.value;
   retry.hidden = true;
@@ -181,7 +174,6 @@ async function loadWeek() {
 async function load() {
   retry.hidden = true;
   week.disabled = true;
-  updateWeekButtons();
   try {
     const entries = await fetchJSON(`${prefix}_index.json`);
     if (!Array.isArray(entries) || entries.some(entry => !entry || !/^\d{8}$/.test(entry.label)
@@ -206,15 +198,6 @@ async function load() {
   }
 }
 week.addEventListener('change', loadWeek);
-for (const [button, step] of [[previous, -1], [next, 1]]) {
-  button.addEventListener('click', () => {
-    const index = week.selectedIndex + step;
-    if (!week.disabled && index >= 0 && index < week.options.length) {
-      week.selectedIndex = index;
-      loadWeek();
-    }
-  });
-}
 retry.addEventListener('click', () => files.size ? loadWeek() : load());
 load();
 

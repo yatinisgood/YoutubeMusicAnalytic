@@ -1,5 +1,5 @@
 'use strict';
-const ui = Object.fromEntries(['all-time', 'top-three', 'status', 'retry', 'featured', 'cards', 'timeline', 'snapshot', 'previous', 'next'].map(id => [id, document.getElementById(id)]));
+const ui = Object.fromEntries(['all-time', 'top-three', 'status', 'retry', 'featured', 'cards', 'timeline', 'snapshot'].map(id => [id, document.getElementById(id)]));
 const snapshots = new Map();
 let dateFiles = new Map();
 let snapshotRequest = 0;
@@ -160,8 +160,6 @@ async function loadDominanceTop3() {
 function renderSnapshot() {
   const label = ui.snapshot.value;
   const songs = snapshots.get(label) || [];
-  ui.previous.disabled = ui.snapshot.selectedIndex <= 0;
-  ui.next.disabled = ui.snapshot.selectedIndex >= ui.snapshot.options.length - 1;
   const groups = new Map();
   for (const song of songs) {
     if (!groups.has(song.songid)) groups.set(song.songid, { song, countries: new Set() });
@@ -177,8 +175,6 @@ function renderSnapshot() {
 async function loadSnapshot() {
   const request = ++snapshotRequest;
   const label = ui.snapshot.value;
-  ui.previous.disabled = ui.snapshot.selectedIndex <= 0;
-  ui.next.disabled = ui.snapshot.selectedIndex >= ui.snapshot.options.length - 1;
   ui.retry.hidden = true;
   ui.status.hidden = false;
   ui.status.textContent = '正在載入所選日期…';
@@ -240,15 +236,6 @@ async function load() {
   }
 }
 ui.snapshot.addEventListener('change', loadSnapshot);
-for (const [button, step] of [[ui.previous, -1], [ui.next, 1]]) {
-  button.addEventListener('click', () => {
-    const index = ui.snapshot.selectedIndex + step;
-    if (index >= 0 && index < ui.snapshot.options.length) {
-      ui.snapshot.selectedIndex = index;
-      loadSnapshot();
-    }
-  });
-}
 ui.retry.addEventListener('click', () => { load(); loadDominanceTop3(); });
 loadDominanceTop3();
 load();
