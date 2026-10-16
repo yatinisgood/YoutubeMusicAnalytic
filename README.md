@@ -34,3 +34,17 @@ python3 -m http.server 8000 --directory HTML_Github
 `GenJSON_ByMusicInfo_GlobalTopSongsOnBoard.py` 匯出 `data/GenJSON_ByMusicInfo_GlobalTopSongsOnBoard.json`，已加入主程式更新清單。依提供的 SQL 計算全球每週熱播歌曲所有名次的不同 `dataweek` 次數，最多取六筆。JSON 沿用 `top1_weeks_count`、`first_top1_week`、`latest_top1_week` 欄位名稱，但在此檔案代表累計入榜週數、首次及最近入榜週次，並非奪冠週數。
 
 頁面在「全球累計奪冠 Top 3」下方、榜單時間選擇器上方顯示「全球累計入榜 Top 6」，桌面六張同列，較窄螢幕沿用三欄、兩欄、單欄配置。此區塊不受榜單時間與國家關注影響，並提供獨立載入失敗重試。
+
+
+最新洞察報告：
+
+近三週排名成長趨勢
+https://yatinisgood.github.io/YoutubeMusicAnalytic/datainsight/global_rising_validation_20261008.html
+https://yatinisgood.github.io/YoutubeMusicAnalytic/datainsight/hk_rising_validation_20261008.html
+https://yatinisgood.github.io/YoutubeMusicAnalytic/datainsight/jp_rising_validation_20261008.html
+https://yatinisgood.github.io/YoutubeMusicAnalytic/datainsight/tw_rising_validation_20261008.html
+https://yatinisgood.github.io/YoutubeMusicAnalytic/datainsight/kr_rising_validation_20261008.html
+https://yatinisgood.github.io/YoutubeMusicAnalytic/datainsight/us_rising_validation_20261008.html
+
+最新一週的跨多國在榜
+https://yatinisgood.github.io/YoutubeMusicAnalytic/datainsight/cross_country_popular_20261008.html
