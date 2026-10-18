@@ -48,3 +48,9 @@ https://yatinisgood.github.io/YoutubeMusicAnalytic/datainsight/us_rising_validat
 
 最新一週的跨多國在榜
 https://yatinisgood.github.io/YoutubeMusicAnalytic/datainsight/cross_country_popular_20261008.html
+
+新增有入榜國家的排行
+https://yatinisgood.github.io/YoutubeMusicAnalytic/datainsight/country_total_top3_20261008.html
+但其實跟全球排行應該沒太大差別。把各國 Top 100 的觀看數加總後重新排名，主要只是換了一個統計口徑，不一定能產生新的洞察。
+因為兩份榜單本質上仍然是以「觀看次數」這個絕對量排序。
+
