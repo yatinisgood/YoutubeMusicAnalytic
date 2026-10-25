@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>香港音樂上升榜｜AIInsight</title>
+<style>
+:root{font-family:system-ui,-apple-system,sans-serif;color:#19332f;background:#f4f6f3;font-variant-numeric:tabular-nums}*{box-sizing:border-box}body{margin:0}main{max-width:1200px;margin:auto;padding:44px 28px}header{border-bottom:1px solid #cfdbd5;padding-bottom:26px}.eyebrow{font-size:12px;letter-spacing:3px;color:#426f62}h1{font-size:clamp(28px,5vw,44px);margin:14px 0}p{line-height:1.7;color:#53665e}.stats{display:flex;gap:36px;margin:26px 0}.stats strong{font-size:28px;display:block}.stats span{font-size:13px;color:#53665e}.controls{display:flex;gap:20px;flex-wrap:wrap;align-items:end;margin:26px 0}label{font-size:13px;display:grid;gap:7px}input,select{font:inherit;padding:10px;border:1px solid #b8c9c0;border-radius:6px;background:white;color:inherit}#cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}.card{background:#fff;border:1px solid #dce4de;border-radius:12px;padding:22px;min-width:0}.medal{display:flex;align-items:center;gap:8px;margin-bottom:14px;font-size:28px}.medal span{font-size:12px;font-weight:700;letter-spacing:2px;color:#53665e}.song{display:flex;gap:16px;align-items:center}.art{width:92px;height:72px;object-fit:cover;border-radius:6px;background:#e4ece7}.song h2{margin:0 0 6px;font-size:20px;overflow-wrap:anywhere}.song p{margin:0;font-size:13px}a{color:#17694f}.badges{display:flex;gap:12px;flex-wrap:wrap;margin:20px 0;font-size:13px}.badges b{background:#e8f5ee;padding:7px 10px;border-radius:5px}.chart{width:100%;height:auto;display:block}.chart text{font:12px system-ui;fill:#53665e}.chart .value{fill:#19332f;font-weight:600}.chart-label{font-size:13px;font-weight:600;margin:14px 0 2px}table{width:100%;border-collapse:collapse;font-size:12px;margin-top:12px}th,td{text-align:right;padding:8px 4px;border-bottom:1px solid #e7ece8}th:first-child,td:first-child{text-align:left}details{margin-top:18px;font-size:12px}summary{cursor:pointer}.empty{padding:35px;background:white;border:1px solid #dce4de;border-radius:10px}footer{margin-top:30px;font-size:12px;line-height:1.8;color:#53665e;overflow-wrap:anywhere}@media(min-width:761px) and (max-width:1050px){#cards{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:760px){main{padding:24px 16px}#cards{grid-template-columns:1fr}.stats{gap:20px}.card{padding:16px}}@media print{.controls{display:none}.card{break-inside:avoid}main{padding:0}}
+/* Compact, single-row layout for embedded reports. */
+:root{background:transparent}
+main{width:100%;max-width:780px;padding:0;margin:auto}
+#cards,.cards{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.card{padding:12px;border-radius:8px;overflow-wrap:anywhere}
+.medal{font-size:22px;gap:5px;margin-bottom:10px}
+.medal span{font-size:10px;letter-spacing:1px}
+h2,.song h2{font-size:16px;line-height:1.35;margin:12px 0 5px}
+.song{display:block}
+.art{width:100%;height:auto;aspect-ratio:16/9;display:block;object-fit:cover}
+.song p,.artists{font-size:11px;line-height:1.5;min-height:0}
+.badges{gap:5px;margin:12px 0;font-size:11px}
+.badges b{padding:5px 6px}
+.chart-label,.section-title{font-size:11px;margin:14px 0 6px}
+.main-number{gap:5px;margin-top:10px;flex-wrap:wrap}
+.main-number strong{font-size:36px;letter-spacing:-1px}
+.main-number span,.coverage{font-size:11px}
+.bar-row{grid-template-columns:44px minmax(0,1fr) 20px;gap:5px;margin:10px 0;font-size:10px}
+.track{height:7px}
+.bottom{gap:6px;padding-top:10px;margin-top:12px;font-size:11px}
+.bottom strong{flex-shrink:0}
+table{table-layout:fixed;font-size:10px;margin-top:8px}
+th,td{padding:6px 2px;overflow-wrap:anywhere}
+.empty{grid-column:1/-1;padding:18px;font-size:12px}
+@media(max-width:480px){
+  #cards,.cards{gap:5px}
+  .card{padding:7px}
+  h2,.song h2{font-size:14px}
+  .main-number strong{font-size:28px}
+  .bar-row{grid-template-columns:35px minmax(0,1fr) 16px;gap:3px;font-size:9px}
+  .bottom{flex-wrap:wrap}
+}
+
+.full-report-link{text-align:right;margin-top:12px;font-size:11px}
+.full-report-link a{display:inline-block;padding:4px 0;text-decoration:underline;text-underline-offset:3px}
+
+</style></head><body><main>
+<div id="cards"></div><div class="full-report-link"><a href="https://yatinisgood.github.io/YoutubeMusicAnalytic/datainsight/hk_rising_validation_20261022.html" target="_blank" rel="noopener noreferrer">看完整</a></div></main>
+<script id="report-data" type="application/json">{"countrycode": "hk", "country_name": "香港", "week_this_week": "2026-10-22", "generated_at": "2026-10-26T07:50:40.587367+08:00", "source": "modga1.MOD_VOD_User_Behavior.YoutubeMusicTopSongs", "job_id": "b1e4371e-9b2d-4f1d-af34-a62110f4e1e8", "total_bytes_processed": 3494706530, "discovery_job_id": "6c01dd1e-b5b8-4ad9-906d-9e9f492982a1", "discovery_bytes_processed": 599480486, "sql_sha256": "c682d5213ed6c0f58af5556a6264cd584fb6f8904f36c871e54b357e6630ad89", "rows": [{"rule_version": "weekly_rising_v1", "countrycode": "hk", "song_id": "G:42IfzMcmzlM", "title": "和我散步牽手deep talk（可以嗎？XD）", "artists": "Freeeboyzzzz, sica", "thumbnailImage": "https://yt3.googleusercontent.com/-f6GXnHhuT8apYQkNs5gfEdVAa6BO5fzkm204raqjfS2i63jS6WeCQ-POIAxU_cSLYF1AcDSJMHQ-pC4=w180-h180-l90-rj", "encryptedVideoId": "tBUh3zkFIx8", "youtube_url": "https://www.youtube.com/watch?v=tBUh3zkFIx8", "week_two_weeks_ago": "2026-10-08", "week_last_week": "2026-10-15", "week_this_week": "2026-10-22", "rank_two_weeks_ago": 91, "rank_last_week": 89, "rank_this_week": 56, "views_two_weeks_ago": 30446, "views_last_week": 32110, "views_this_week": 41787, "rank_gain_last_week_vs_two_weeks_ago": 2, "rank_gain_this_week_vs_last_week": 33, "total_rank_gain": 35, "views_gain_last_week_vs_two_weeks_ago": 1664, "views_gain_this_week_vs_last_week": 9677, "view_growth_last_week_vs_two_weeks_ago": 0.05465414175918019, "view_growth_this_week_vs_last_week": 0.30137028962939894, "total_view_growth": 0.3724955659199895, "source_onboardweeks": 4, "source_lastweekrank": 89, "lastweekrank_matches_history": true}]}</script>
+<script>
+const headless=true;
+const report=JSON.parse(document.getElementById('report-data').textContent),rows=report.rows;
+const el=id=>document.getElementById(id),fmt=n=>Number(n).toLocaleString('en-US'),pct=n=>(n*100).toFixed(1)+'%';
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const safeUrl=s=>{try{const u=new URL(s);return ['https:','http:'].includes(u.protocol)?esc(u.href):''}catch{return ''}};
+const week=report.week_this_week||rows[0]?.week_this_week;
+function prior(days){const d=new Date(week+'T00:00:00Z');d.setUTCDate(d.getUTCDate()-days);return d.toISOString().slice(0,10)}
+const dates=[prior(14),prior(7),week];
+if(!headless){
+el('period').textContent=dates.join(' → ')+'｜日期為榜單週別標籤';
+el('count').textContent=rows.length;el('bestGain').textContent=rows.length?Math.max(...rows.map(r=>r.total_rank_gain))+' 名':'—';el('bestGrowth').textContent=rows.length?pct(Math.max(...rows.map(r=>r.total_view_growth))):'—';
+}
+function chart(values,rank){const max=rank?100:Math.max(...values)*1.25;const y=v=>rank?40+(v-1)/99*90:130-v/max*100;const xs=[70,230,390];return `<svg class="chart" viewBox="0 0 460 170" role="img" aria-label="${rank?'排名':'週觀看數'}：${esc(values.join(' → '))}"><path d="M45 35V135H420" fill="none" stroke="#dce4de"/><text x="4" y="40">${rank?'1名':(max/1e6).toFixed(1)+'M'}</text><text x="4" y="135">${rank?'100名':'0'}</text><polyline points="${values.map((v,i)=>xs[i]+','+y(v)).join(' ')}" fill="none" stroke="${rank?'#167455':'#4b75aa'}" stroke-width="3"/>${values.map((v,i)=>`<circle cx="${xs[i]}" cy="${y(v)}" r="4" fill="${rank?'#167455':'#4b75aa'}"/><text class="value" x="${xs[i]}" y="${y(v)-12}" text-anchor="middle">${rank?'#'+v:(v/1e6).toFixed(2)+'M'}</text><text x="${xs[i]}" y="158" text-anchor="middle">${dates[i].slice(5)}</text>`).join('')}</svg>`}
+function card(r,index){const ranks=[r.rank_two_weeks_ago,r.rank_last_week,r.rank_this_week],views=[r.views_two_weeks_ago,r.views_last_week,r.views_this_week];const url=safeUrl(r.youtube_url),thumb=safeUrl(r.thumbnailImage);return `<article class="card">${index<3?`<div class="medal" aria-label="第 ${index+1} 名">${['🥇','🥈','🥉'][index]} <span>TOP ${index+1}</span></div>`:''}<div class="song">${thumb?`<img class="art" src="${thumb}" alt="${esc(r.title)} 縮圖" loading="lazy" referrerpolicy="no-referrer">`:'<div class="art" aria-label="無縮圖"></div>'}<div><h2>${url?`<a href="${url}" target="_blank" rel="noopener noreferrer">${esc(r.title)} ↗</a>`:esc(r.title)}</h2><p>${esc(r.artists||'歌手資料未提供')}</p></div></div><div class="badges"><b>↑ ${r.total_rank_gain} 名</b><b>觀看數 +${pct(r.total_view_growth)}</b></div><div class="chart-label">名次走勢</div>${chart(ranks,true)}<div class="chart-label">週觀看數</div>${chart(views,false)}<table><thead><tr><th>週別</th><th>名次</th><th>觀看數</th></tr></thead><tbody>${dates.map((d,i)=>`<tr><td>${d}</td><td>${ranks[i]}</td><td>${fmt(views[i])}</td></tr>`).join('')}</tbody></table></article>`}
+function render(){const q=el('search').value.toLocaleLowerCase();const list=rows.filter(r=>(r.title+' '+(r.artists||'')).toLocaleLowerCase().includes(q));const mode=el('sort').value;list.sort((a,b)=>mode==='rank'?a.rank_this_week-b.rank_this_week:mode==='growth'?b.total_view_growth-a.total_view_growth:b.total_rank_gain-a.total_rank_gain);el('cards').innerHTML=list.length?list.map(card).join(''):'<div class="empty">'+(rows.length?'沒有符合搜尋的歌曲。':'本週沒有符合條件的歌曲。')+'</div>';el('shown').textContent=`顯示 ${list.length} / ${rows.length} 首`;}
+if(headless){el('cards').innerHTML=rows.length?rows.map(card).join(''):'<div class="empty">本週沒有符合條件的歌曲。</div>';}else{el('search').addEventListener('input',render);el('sort').addEventListener('change',render);render();}
+</script></body></html>
