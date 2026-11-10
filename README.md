@@ -1,7 +1,7 @@
 # 音樂榜單網頁
 
 
-第一個頁面為 `trending-music-videos.html`：各國排行第一的發燒音樂（影片）。
+第一個頁面為 `trending-music-videos.html`：各國排行第一的發燒音樂（影片）！
 
 在專案根目錄執行：
 ```sh
